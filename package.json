@@ -1,0 +1,12 @@
+{
+  "name": "@codeenplace/sherry",
+  "version": "0.0.0",
+  "description": "jQuery for running shell commands",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.mjs",
+  "files": ["index.mjs"],
+  "scripts": { "test": "./test.mjs" },
+  "prettier": { "printWidth": 140 }
+}
