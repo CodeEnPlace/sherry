@@ -67,7 +67,7 @@ function makeSherry(config) {
         if (buffer.includes(config.delimiter)) {
           const [head, ...tail] = buffer.split(config.delimiter);
           buffer = tail.join(config.delimiter);
-          done({ done: code !== null, value: head });
+          done({ done: false, value: head });
         }
 
         if (code !== null) done({ done: code !== null, value: null });

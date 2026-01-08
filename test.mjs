@@ -46,6 +46,8 @@ async function test() {
     }
     assert.deepEqual(acc, ["foo", "bar", "baz"], "streams custom delimiter");
   })();
+
+  assert.rejects(sh("./subCmd.mjs", "--code-out", 3));
 }
 
 test();
