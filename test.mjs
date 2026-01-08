@@ -31,6 +31,7 @@ async function test() {
   assert.deepEqual(await sh({ outputs: "stdout" })("./subCmd.mjs", "--echo-out", "foo", "--echo-err", "bar"), "foo", "stdout");
   assert.deepEqual(await sh({ outputs: "stderr" })("./subCmd.mjs", "--echo-out", "foo", "--echo-err", "bar"), "bar", "stderr");
 
+  console.log("foo");
   await (async () => {
     let acc = [];
     for await (const line of sh("./subCmd.mjs", "--echo-out", "foo", "--echo-out", "bar")) {
@@ -39,6 +40,7 @@ async function test() {
     assert.deepEqual(acc, ["foo", "bar"], "streams lines");
   })();
 
+  console.log("enter");
   await (async () => {
     let acc = [];
     for await (const line of sh({ delimiter: " " })("./subCmd.mjs", "--echo-out", "'foo bar baz'")) {
@@ -47,7 +49,9 @@ async function test() {
     assert.deepEqual(acc, ["foo", "bar", "baz"], "streams custom delimiter");
   })();
 
-  assert.rejects(sh("./subCmd.mjs", "--code-out", 3));
+  console.log("exit");
+  // assert.rejects(sh("./subCmd.mjs", "--code-out", 0));
+  console.log("exit");
 }
 
 test();

@@ -61,16 +61,22 @@ function makeSherry(config) {
 
       let buffer = "";
       let code = null;
-      let done = () => {};
-      let fail = () => {};
+      let resolve = () => {};
+      let reject = () => {};
       let poll = () => {
         if (buffer.includes(config.delimiter)) {
           const [head, ...tail] = buffer.split(config.delimiter);
           buffer = tail.join(config.delimiter);
-          done({ done: false, value: head });
+          return resolve({ done: false, value: head });
         }
 
-        if (code !== null) done({ done: code !== null, value: null });
+        if (buffer.length > 0) {
+          const value = buffer.trimEnd();
+          buffer = "";
+          return resolve({ done: false, value });
+        }
+
+        if (code !== null) return resolve({ done: code !== null, value: null });
       };
 
       const stream = config.outputs === "stderr" ? "stderr" : "stdout";
@@ -89,8 +95,9 @@ function makeSherry(config) {
           return {
             next() {
               return new Promise((d, f) => {
-                done = d;
-                fail = f;
+                resolve = d;
+                reject = f;
+                poll();
               });
             },
             return() {
@@ -125,7 +132,8 @@ function makeSherry(config) {
                 let resolvedProc = await iter;
                 iter = resolvedProc[Symbol.asyncIterator]();
               }
-              done(await iter.next());
+              const val = await iter.next();
+              done(val);
             });
           },
           return() {
