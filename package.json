@@ -6,7 +6,16 @@
   "author": "",
   "type": "module",
   "main": "index.mjs",
-  "files": ["index.mjs"],
-  "scripts": { "test": "./test.mjs" },
-  "prettier": { "printWidth": 140 }
+  "files": [
+    "index.mjs"
+  ],
+  "scripts": {
+    "test": "./test.mjs"
+  },
+  "prettier": {
+    "printWidth": 140
+  },
+  "devDependencies": {
+    "prettier": "^3.7.4"
+  }
 }

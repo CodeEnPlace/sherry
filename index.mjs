@@ -76,7 +76,10 @@ function makeSherry(config) {
           return resolve({ done: false, value });
         }
 
-        if (code !== null) return resolve({ done: code !== null, value: null });
+        if (code !== null) {
+          if (code === 0) return resolve({ done: true, value: null });
+          else return reject({ done: true, value: null });
+        }
       };
 
       const stream = config.outputs === "stderr" ? "stderr" : "stdout";
@@ -127,7 +130,7 @@ function makeSherry(config) {
 
         return {
           next() {
-            return new Promise(async (done, f) => {
+            return new Promise(async (done, fail) => {
               if (iter.then) {
                 let resolvedProc = await iter;
                 iter = resolvedProc[Symbol.asyncIterator]();
