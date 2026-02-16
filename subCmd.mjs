@@ -1,22 +1,24 @@
 #!/usr/bin/env node
 
-// hello.js
-import arg from "arg";
+const args = process.argv.slice(2);
 
-const args = arg({
-  "--echo-out": [String],
-  "--echo-err": [String],
-  "--env-out": [String],
-});
+let i = 0;
+while (i < args.length) {
+  const flag = args[i++];
+  const val = args[i++];
 
-for (const echoOut of args["--echo-out"] ?? []) {
-  process.stdout.write(echoOut + "\n");
-}
-
-for (const echoErr of args["--echo-err"] ?? []) {
-  process.stderr.write(echoErr + "\n");
-}
-
-for (const envOut of args["--env-out"] ?? []) {
-  process.stdout.write(`${envOut}=${process.env[envOut]}\n`);
+  switch (flag) {
+    case "--echo-out":
+      process.stdout.write(val + "\n");
+      break;
+    case "--echo-err":
+      process.stderr.write(val + "\n");
+      break;
+    case "--env-out":
+      process.stdout.write(`${val}=${process.env[val]}\n`);
+      break;
+    case "--exit-code":
+      process.exitCode = Number(val);
+      break;
+  }
 }

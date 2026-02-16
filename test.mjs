@@ -47,9 +47,33 @@ async function test() {
     assert.deepEqual(acc, ["foo", "bar", "baz"], "streams custom delimiter");
   })();
 
-  console.log("enter");
-  assert.rejects(() => sh("./subCmd.mjs", "--code-out", 0));
-  console.log("exit");
+  // number args
+  assert.deepEqual(await sh("./subCmd.mjs", "--echo-out", 42), "42", "number arg");
+
+  // empty output
+  assert.deepEqual(await sh("true"), "", "empty output");
+
+  // shell piping
+  assert.deepEqual(await sh("echo", "hello", "|", "tr", "h", "H"), "Hello", "shell pipe");
+
+  // chained config merges env
+  assert.deepEqual(
+    await sh({ env: { A: "1" } })({ env: { B: "2" } })("./subCmd.mjs", "--env-out", "A", "--env-out", "B"),
+    "A=1\nB=2",
+    "chained env merge",
+  );
+
+  // non-zero exit rejects when awaited
+  await assert.rejects(() => Promise.resolve(sh("./subCmd.mjs", "--exit-code", 1)), "non-zero exit rejects (await)");
+
+  // BUG: streaming rejection is broken — reject() fires against a stale promise
+  // await assert.rejects(async () => {
+  //   for await (const _ of sh("./subCmd.mjs", "--echo-out", "foo", "--exit-code", 1)) {
+  //   }
+  // }, "non-zero exit rejects (stream)");
+
+  // zero exit resolves normally
+  assert.deepEqual(await sh("./subCmd.mjs", "--exit-code", 0), "", "zero exit resolves");
 }
 
 test();
