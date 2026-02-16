@@ -61,24 +61,41 @@ function makeSherry(config) {
 
       let buffer = "";
       let code = null;
-      let resolve = () => {};
-      let reject = () => {};
+      let resolve = null;
+      let reject = null;
       let poll = () => {
+        if (!resolve) return;
+
         if (buffer.includes(config.delimiter)) {
           const [head, ...tail] = buffer.split(config.delimiter);
           buffer = tail.join(config.delimiter);
-          return resolve({ done: false, value: head });
+          const r = resolve;
+          resolve = null;
+          reject = null;
+          return r({ done: false, value: head });
         }
 
-        if (buffer.length > 0) {
+        if (code !== null && buffer.length > 0) {
           const value = buffer.trimEnd();
           buffer = "";
-          return resolve({ done: false, value });
+          const r = resolve;
+          resolve = null;
+          reject = null;
+          return r({ done: false, value });
         }
 
         if (code !== null) {
-          if (code === 0) return resolve({ done: true, value: null });
-          else return reject({ done: true, value: null });
+          if (code === 0) {
+            const r = resolve;
+            resolve = null;
+            reject = null;
+            return r({ done: true, value: null });
+          } else {
+            const r = reject;
+            resolve = null;
+            reject = null;
+            return r({ done: true, value: null });
+          }
         }
       };
 
@@ -104,7 +121,7 @@ function makeSherry(config) {
               });
             },
             return() {
-              // I don't know what this does, and I'm not finding out
+              // I don't know what this does
               return { done: true };
             },
           };
@@ -129,18 +146,15 @@ function makeSherry(config) {
         let iter = makeProc();
 
         return {
-          next() {
-            return new Promise(async (done, fail) => {
-              if (iter.then) {
-                let resolvedProc = await iter;
-                iter = resolvedProc[Symbol.asyncIterator]();
-              }
-              const val = await iter.next();
-              done(val);
-            });
+          async next() {
+            if (iter.then) {
+              let resolvedProc = await iter;
+              iter = resolvedProc[Symbol.asyncIterator]();
+            }
+            return iter.next();
           },
           return() {
-            // I don't know what this does, and I'm not finding out
+            // I don't know what this does
             return { done: true };
           },
         };

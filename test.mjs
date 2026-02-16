@@ -66,11 +66,10 @@ async function test() {
   // non-zero exit rejects when awaited
   await assert.rejects(() => Promise.resolve(sh("./subCmd.mjs", "--exit-code", 1)), "non-zero exit rejects (await)");
 
-  // BUG: streaming rejection is broken — reject() fires against a stale promise
-  // await assert.rejects(async () => {
-  //   for await (const _ of sh("./subCmd.mjs", "--echo-out", "foo", "--exit-code", 1)) {
-  //   }
-  // }, "non-zero exit rejects (stream)");
+  await assert.rejects(async () => {
+    for await (const _ of sh("./subCmd.mjs", "--echo-out", "foo", "--exit-code", 1)) {
+    }
+  }, "non-zero exit rejects (stream)");
 
   // zero exit resolves normally
   assert.deepEqual(await sh("./subCmd.mjs", "--exit-code", 0), "", "zero exit resolves");

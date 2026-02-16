@@ -1,6 +1,6 @@
 # Sherry
 
-> javascript shell multi-tool
+> Javascript shell multi-tool
 
 ## Example
 
