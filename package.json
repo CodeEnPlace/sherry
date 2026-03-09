@@ -1,12 +1,14 @@
 {
   "name": "@codeenplace/sherry",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "javascript shell multi-tool",
   "license": "ISC",
   "author": "",
   "type": "module",
   "main": "index.mjs",
-  "files": ["index.mjs"],
+  "files": [
+    "index.mjs"
+  ],
   "scripts": {
     "test": "./test.mjs"
   },
