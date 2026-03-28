@@ -130,16 +130,14 @@ function makeSherry(config) {
     }
 
     return {
-      then: async (done, fail) => {
-        try {
+      then: (done, fail) => {
+        const p = (async () => {
           const acc = [];
-
           for await (const chunk of await makeProc()) acc.push(chunk);
+          return acc.join(config.delimiter);
+        })();
 
-          done(acc.join(config.delimiter));
-        } catch (e) {
-          fail(e);
-        }
+        return p.then(done, fail);
       },
 
       [Symbol.asyncIterator]() {

@@ -63,6 +63,13 @@ async function test() {
     "chained env merge",
   );
 
+  // non-zero exit rejects through .then(onFulfilled) chain (no reject handler)
+  await assert.rejects(
+    sh("./subCmd.mjs", "--exit-code", 1).then((x) => x.trim()),
+    (e) => !(e instanceof TypeError),
+    "non-zero exit through .then chain should not be TypeError",
+  );
+
   // non-zero exit rejects when awaited
   await assert.rejects(() => Promise.resolve(sh("./subCmd.mjs", "--exit-code", 1)), "non-zero exit rejects (await)");
 
