@@ -3,6 +3,10 @@
   "version": "0.0.2",
   "description": "javascript shell multi-tool",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeEnPlace/sherry.git"
+  },
   "author": "",
   "type": "module",
   "main": "index.mjs",
