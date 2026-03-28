@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 
-export default makeSherry({ outputs: "stdout", delimiter: "\n", shell: process.env.SHELL, env: process.env });
+export default makeSherry({ outputs: "stdout", delimiter: "\n", shell: process.env.SHELL || "/bin/sh", env: process.env });
 
 function makeSherry(config) {
   return function sherry(...args) {
@@ -57,7 +57,7 @@ function makeSherry(config) {
 
       const cmd = cmdAcc.join(" ");
 
-      const proc = spawn(config.shell, ["-c", cmd], { env: config.env });
+      const proc = spawn(config.shell || "/bin/sh", ["-c", cmd], { env: config.env });
 
       let buffer = "";
       let code = null;

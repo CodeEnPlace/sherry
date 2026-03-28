@@ -80,6 +80,10 @@ async function test() {
 
   // zero exit resolves normally
   assert.deepEqual(await sh("./subCmd.mjs", "--exit-code", 0), "", "zero exit resolves");
+
+  // works when SHELL env var is unset
+  const noShell = sh({ shell: undefined });
+  assert.deepEqual(await noShell("./subCmd.mjs", "--echo-out", "foo"), "foo", "fallback shell");
 }
 
 test();
